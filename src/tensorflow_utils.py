@@ -5,9 +5,8 @@
 # Email: sbkim0407@gmail.com
 # ---------------------------------------------------------
 import tensorflow as tf
-from tensorflow.python.training import moving_averages
-
 from src import model_analyzer
+from src.model_analyzer import assign_moving_average
 
 
 def padding2d(x, p_h=1, p_w=1, pad_type='REFLECT', name='pad2d'):
@@ -111,8 +110,8 @@ def batch_norm(x, name, _ops, is_train=True):
                                               initializer=tf.constant_initializer(1.0, tf.float32),
                                               trainable=False)
 
-            _ops.append(moving_averages.assign_moving_average(moving_mean, mean, 0.9))
-            _ops.append(moving_averages.assign_moving_average(moving_variance, variance, 0.9))
+            _ops.append(assign_moving_average(moving_mean, mean, 0.9))
+            _ops.append(assign_moving_average(moving_variance, variance, 0.9))
         else:
             mean = tf.get_variable('moving_mean', params_shape, tf.float32,
                                    initializer=tf.constant_initializer(0.0, tf.float32), trainable=False)
