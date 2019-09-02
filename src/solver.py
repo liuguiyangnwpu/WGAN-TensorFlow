@@ -17,7 +17,7 @@ import src.tensorflow_utils as tf_utils
 
 class Solver(object):
     def __init__(self, flags):
-        run_config = tf.ConfigProto()
+        run_config = tf.ConfigProto(log_device_placement=True)
         run_config.gpu_options.allow_growth = True
         self.sess = tf.Session(config=run_config)
 

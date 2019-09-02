@@ -33,33 +33,34 @@ class WGAN(object):
         print("Initialized WGAN SUCCESS!")
 
     def _build_net(self):
-        self.Y = tf.placeholder(tf.float32, shape=[None, *self.image_size], name='output')
-        self.z = tf.placeholder(tf.float32, shape=[None, self.flags.z_dim], name='latent_vector')
+        with tf.device("/device:GPU:0"):
+            self.Y = tf.placeholder(tf.float32, shape=[None, *self.image_size], name='output')
+            self.z = tf.placeholder(tf.float32, shape=[None, self.flags.z_dim], name='latent_vector')
 
-        self.g_samples = self.generator(self.z)
-        _, d_logit_real = self.discriminator(self.Y)
-        _, d_logit_fake = self.discriminator(self.g_samples, is_reuse=True)
+            self.g_samples = self.generator(self.z)
+            _, d_logit_real = self.discriminator(self.Y)
+            _, d_logit_fake = self.discriminator(self.g_samples, is_reuse=True)
 
-        # discriminator loss
-        self.d_loss = tf.reduce_mean(d_logit_real) - tf.reduce_mean(d_logit_fake)
-        # generator loss
-        self.g_loss = -tf.reduce_mean(d_logit_fake)
+            # discriminator loss
+            self.d_loss = tf.reduce_mean(d_logit_real) - tf.reduce_mean(d_logit_fake)
+            # generator loss
+            self.g_loss = -tf.reduce_mean(d_logit_fake)
 
-        d_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='d_')
-        g_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='g_')
+            d_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='d_')
+            g_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='g_')
 
-        # Optimizers for generator and discriminator
-        dis_op = tf.train.RMSPropOptimizer(learning_rate=self.flags.learning_rate).minimize(
-            -self.d_loss, var_list=d_vars)
-        dis_ops = [dis_op] + self._dis_train_ops
-        self.dis_optim = tf.group(*dis_ops)
-        self.clip_dis = [var.assign(tf.clip_by_value(var, -self.flags.clip_val, self.flags.clip_val))
-                         for var in d_vars]
+            # Optimizers for generator and discriminator
+            dis_op = tf.train.RMSPropOptimizer(learning_rate=self.flags.learning_rate).minimize(
+                -self.d_loss, var_list=d_vars)
+            dis_ops = [dis_op] + self._dis_train_ops
+            self.dis_optim = tf.group(*dis_ops)
+            self.clip_dis = [var.assign(tf.clip_by_value(var, -self.flags.clip_val, self.flags.clip_val))
+                             for var in d_vars]
 
-        gen_op = tf.train.RMSPropOptimizer(learning_rate=self.flags.learning_rate).minimize(
-            self.g_loss, var_list=g_vars)
-        gen_ops = [gen_op] + self._gen_train_ops
-        self.gen_optim = tf.group(*gen_ops)
+            gen_op = tf.train.RMSPropOptimizer(learning_rate=self.flags.learning_rate).minimize(
+                self.g_loss, var_list=g_vars)
+            gen_ops = [gen_op] + self._gen_train_ops
+            self.gen_optim = tf.group(*gen_ops)
 
     def _tensorboard(self):
         tf.summary.scalar('loss/d_loss', self.d_loss)
