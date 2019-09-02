@@ -7,7 +7,7 @@
 import os
 import tensorflow as tf
 
-from solver import Solver
+from src.solver import Solver
 
 FLAGS = tf.flags.FLAGS
 

@@ -10,9 +10,9 @@ import numpy as np
 import tensorflow as tf
 from datetime import datetime
 
-from dataset import Dataset
-from wgan import WGAN
-import tensorflow_utils as tf_utils
+from src.dataset import Dataset
+from src.wgan import WGAN
+import src.tensorflow_utils as tf_utils
 
 
 class Solver(object):

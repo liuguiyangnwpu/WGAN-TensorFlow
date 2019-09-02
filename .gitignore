@@ -3,3 +3,6 @@ src/.idea/
 src/mnist/
 src/celebA/
 github_imgs/
+.idea/
+data/
+mnist/

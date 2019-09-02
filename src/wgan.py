@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
 # noinspection PyPep8Naming
-import tensorflow_utils as tf_utils
-import utils as utils
+import src.tensorflow_utils as tf_utils
+import src.utils as utils
 
 
 class WGAN(object):

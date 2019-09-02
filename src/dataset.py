@@ -9,7 +9,7 @@ import numpy as np
 import scipy.misc
 import tensorflow as tf
 
-import utils as utils
+import src.utils as utils
 
 
 class MnistDataset(object):
