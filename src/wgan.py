@@ -121,7 +121,7 @@ class WGAN(object):
             h2_lrelu = tf_utils.lrelu(h2_batchnorm, name='h2_lrelu')
 
             if self.flags.dataset == 'mnist':
-                h2_flatten = flatten(h2_lrelu)
+                h2_flatten = tf.compat.v1.layers.flatten(h2_lrelu)
                 h3_linear = tf_utils.linear(h2_flatten, 1, name='h3_linear')
 
                 return tf.nn.sigmoid(h3_linear), h3_linear
@@ -131,7 +131,7 @@ class WGAN(object):
                 h3_batchnorm = tf_utils.batch_norm(h3_conv, name='h3_batchnorm', _ops=self._dis_train_ops)
                 h3_lrelu = tf_utils.lrelu(h3_batchnorm, name='h3_lrelu')
 
-                h3_flatten = flatten(h3_lrelu)
+                h3_flatten = tf.compat.v1.layers.flatten(h3_lrelu)
                 h4_linear = tf_utils.linear(h3_flatten, 1, name='h4_linear')
 
                 return tf.nn.sigmoid(h4_linear), h4_linear
