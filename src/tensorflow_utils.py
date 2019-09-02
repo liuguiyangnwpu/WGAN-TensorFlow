@@ -5,8 +5,9 @@
 # Email: sbkim0407@gmail.com
 # ---------------------------------------------------------
 import tensorflow as tf
-import tensorflow.contrib.slim as slim
 from tensorflow.python.training import moving_averages
+
+from src import model_analyzer
 
 
 def padding2d(x, p_h=1, p_w=1, pad_type='REFLECT', name='pad2d'):
@@ -241,7 +242,7 @@ def print_activations(t):
 
 def show_all_variables():
     model_vars = tf.trainable_variables()
-    slim.model_analyzer.analyze_vars(model_vars, print_info=True)
+    model_analyzer.analyze_vars(model_vars, print_info=True)
 
 
 def batch_convert2int(images):
