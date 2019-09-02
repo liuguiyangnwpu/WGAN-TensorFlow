@@ -9,6 +9,7 @@ import numpy as np
 import tensorflow as tf
 import scipy
 import src.utils as utils
+from PIL import Image
 
 
 class MnistDataset(object):
@@ -51,8 +52,11 @@ class MnistDataset(object):
         else:
             batch_imgs = np.reshape(batch_imgs, [self.flags.batch_size, 28, 28])
 
-        imgs_32 = [scipy.misc.imresize(batch_imgs[idx], self.image_size[0:2])
+        # np.array(Image.fromarray(arr).resize())
+        imgs_32 = [np.array(Image.fromarray(batch_imgs[idx]).resize(self.image_size[0:2]))
                    for idx in range(batch_imgs.shape[0])]
+        # imgs_32 = [scipy.misc.imresize(batch_imgs[idx], self.image_size[0:2])
+        #            for idx in range(batch_imgs.shape[0])]
         imgs_array = np.expand_dims(np.asarray(imgs_32).astype(np.float32), axis=3)
 
         # print('imgs shape: {}'.format(imgs_array.shape))
