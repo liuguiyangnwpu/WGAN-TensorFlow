@@ -6,9 +6,8 @@
 # ---------------------------------------------------------
 import os
 import numpy as np
-import scipy.misc
 import tensorflow as tf
-
+import scipy
 import src.utils as utils
 
 

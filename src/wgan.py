@@ -7,7 +7,6 @@
 import collections
 import numpy as np
 import tensorflow as tf
-from tensorflow.contrib.layers import flatten
 import matplotlib as mpl
 mpl.use('TkAgg')  # or whatever other backend that you want to solve Segmentation fault (core dumped)
 import matplotlib.pyplot as plt
@@ -70,7 +69,8 @@ class WGAN(object):
 
     def generator(self, data, name='g_'):
         with tf.variable_scope(name):
-            data_flatten = flatten(data)
+            # data_flatten = flatten(data)
+            data_flatten = tf.compat.v1.layers.flatten(data)
 
             # 4 x 4
             h0_linear = tf_utils.linear(data_flatten, 4*4*self.gen_c[0], name='h0_linear')
