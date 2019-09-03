@@ -88,7 +88,8 @@ class TimeSeriesNaskdaq(object):
         self.flags = flags
         self.dataset_name = dataset_name
         self.file_path = "/home/wuming/repo/WGAN-TensorFlow/data/nasdaq100_padding.csv"
-        self.window = 28
+        # self.file_path = "/Users/wuming/CodeRepo/dl/WGAN-TensorFlow/data/nasdaq100_padding.csv"
+        self.window = 32
         self.image_size = [32, 32, 1]
         self.step = 16
         self.x_trains = None
@@ -96,7 +97,7 @@ class TimeSeriesNaskdaq(object):
     def __preprare_ts_data__(self):
         data_frame = pd.read_csv(self.file_path)
         index_names = data_frame.columns
-        sub_index_names = index_names[:32]
+        sub_index_names = index_names[:self.window]
         sub_data_frame = data_frame[sub_index_names]
         # normal [-1, 1]
         normal_sub_data_frame = (sub_data_frame - sub_data_frame.min()) / (sub_data_frame.max() - sub_data_frame.min())
@@ -112,13 +113,13 @@ class TimeSeriesNaskdaq(object):
             ed = st + self.window
             sub_frame = normal_data_frame[st:ed]
             x_trains.append(sub_frame)
-        self.x_trains = x_trains
+        self.x_trains = np.expand_dims(np.array(x_trains), axis=3)
 
     def train_next_batch(self, batch_size):
         indexes = list(range(0, len(self.x_trains)))
         select_idx = np.random.choice(indexes, batch_size, replace=False)
         frame = np.asarray(self.x_trains[select_idx])
-        return np.expand_dims(frame, axis=3)
+        return frame
 
 
 # noinspection PyPep8Naming
