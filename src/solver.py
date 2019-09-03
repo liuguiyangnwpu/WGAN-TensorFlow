@@ -24,6 +24,7 @@ class Solver(object):
 
         self.flags = flags
         self.dataset = Dataset(self.sess, flags, self.flags.dataset)
+        self.dataset.load_data()
         self.model = WGANTimeSeries(self.sess, self.flags, self.dataset)
 
         self._make_folders()
