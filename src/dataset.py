@@ -115,8 +115,10 @@ class TimeSeriesNaskdaq(object):
         self.x_trains = x_trains
 
     def train_next_batch(self, batch_size):
-        batch_paths = np.random.choice(self.x_trains, batch_size, replace=False)
-        return np.asarray(batch_paths)
+        indexes = list(range(0, len(self.x_trains)))
+        select_idx = np.random.choice(indexes, batch_size, replace=False)
+        frame = np.asarray(self.x_trains[select_idx])
+        return np.expand_dims(frame, axis=3)
 
 
 # noinspection PyPep8Naming
