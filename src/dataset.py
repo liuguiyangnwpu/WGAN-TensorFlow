@@ -87,11 +87,10 @@ class TimeSeriesNaskdaq(object):
     def __init__(self, flags, dataset_name):
         self.flags = flags
         self.dataset_name = dataset_name
-        self.file_path = "/Users/wuming/CodeRepo/dl/WGAN-TensorFlow/data/nasdaq100_padding.csv"
+        self.file_path = "/home/wuming/repo/WGAN-TensorFlow/data/nasdaq100_padding.csv"
         self.window = 28
         self.image_size = [32, 32, 1]
         self.step = 16
-        self.batch_size = 64
         self.x_trains = None
 
     def __preprare_ts_data__(self):
@@ -115,8 +114,8 @@ class TimeSeriesNaskdaq(object):
             x_trains.append(sub_frame)
         self.x_trains = x_trains
 
-    def train_next_batch(self):
-        batch_paths = np.random.choice(self.x_trains, self.batch_size, replace=False)
+    def train_next_batch(self, batch_size):
+        batch_paths = np.random.choice(self.x_trains, batch_size, replace=False)
         return np.asarray(batch_paths)
 
 
