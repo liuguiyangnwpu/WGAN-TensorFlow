@@ -11,19 +11,20 @@ import tensorflow as tf
 from datetime import datetime
 
 from src.dataset import Dataset
-from src.wgan import WGAN
+# from src.wgan import WGAN
+from src.wgan_ts import WGANTimeSeries
 import src.tensorflow_utils as tf_utils
 
 
 class Solver(object):
     def __init__(self, flags):
-        run_config = tf.ConfigProto(log_device_placement=True)
+        run_config = tf.compat.v1.ConfigProto(log_device_placement=False)
         run_config.gpu_options.allow_growth = True
-        self.sess = tf.Session(config=run_config)
+        self.sess = tf.compat.v1.Session(config=run_config)
 
         self.flags = flags
         self.dataset = Dataset(self.sess, flags, self.flags.dataset)
-        self.model = WGAN(self.sess, self.flags, self.dataset)
+        self.model = WGANTimeSeries(self.sess, self.flags, self.dataset)
 
         self._make_folders()
         self.iter_time = 0

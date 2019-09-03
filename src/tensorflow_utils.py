@@ -15,7 +15,7 @@ def padding2d(x, p_h=1, p_w=1, pad_type='REFLECT', name='pad2d'):
 
 
 def conv2d(x, output_dim, k_h=5, k_w=5, d_h=2, d_w=2, stddev=0.02, padding='SAME', name='conv2d', is_print=True):
-    with tf.variable_scope(name):
+    with tf.compat.v1.variable_scope(name):
         w = tf.get_variable('w', [k_h, k_w, x.get_shape()[-1], output_dim],
                             initializer=tf.truncated_normal_initializer(stddev=stddev))
         conv = tf.nn.conv2d(x, w, strides=[1, d_h, d_w, 1], padding=padding)
@@ -32,7 +32,7 @@ def conv2d(x, output_dim, k_h=5, k_w=5, d_h=2, d_w=2, stddev=0.02, padding='SAME
 
 def deconv2d(x, k, k_h=3, k_w=3, d_h=2, d_w=2, stddev=0.02, padding_='SAME', output_size=None,
              name='deconv2d', with_w=False, is_print=True):
-    with tf.variable_scope(name):
+    with tf.compat.v1.variable_scope(name):
         input_shape = x.get_shape().as_list()
 
         # calculate output size
@@ -70,9 +70,9 @@ def linear(x, output_size, bias_start=0.0, with_w=False, name='fc'):
     shape = x.get_shape().as_list()
     # print('shape: ', shape)
 
-    with tf.variable_scope(name):
-        matrix = tf.get_variable(name="matrix", shape=[shape[1], output_size],
-                                 dtype=tf.float32, initializer=tf.contrib.layers.xavier_initializer())
+    with tf.compat.v1.variable_scope(name):
+        matrix = tf.compat.v1.get_variable(name="matrix", shape=[shape[1], output_size],
+                                           dtype=tf.float32, initializer=tf.contrib.layers.xavier_initializer())
         bias = tf.get_variable(name="bias", shape=[output_size],
                                initializer=tf.constant_initializer(bias_start))
         if with_w:
@@ -92,7 +92,7 @@ def norm(x, name, _type, _ops, is_train=True):
 
 def batch_norm(x, name, _ops, is_train=True):
     """Batch normalization."""
-    with tf.variable_scope(name):
+    with tf.compat.v1.variable_scope(name):
         params_shape = [x.get_shape()[-1]]
 
         beta = tf.get_variable('beta', params_shape, tf.float32,
@@ -125,7 +125,7 @@ def batch_norm(x, name, _ops, is_train=True):
 
 
 def instance_norm(x, name='instance_norm', mean=1.0, stddev=0.02, epsilon=1e-5):
-    with tf.variable_scope(name):
+    with tf.compat.v1.variable_scope(name):
         depth = x.get_shape()[3]
         scale = tf.get_variable(
             'scale', [depth], tf.float32,
@@ -157,11 +157,11 @@ def n_res_blocks(x, _ops=None, norm_='instance', is_train=True, num_blocks=6, is
 
 # norm(x, name, _type, _ops, is_train=True)
 def res_block(x, k, _ops=None, norm_='instance', is_train=True, pad_type=None, name=None):
-    with tf.variable_scope(name):
+    with tf.compat.v1.variable_scope(name):
         conv1, conv2 = None, None
 
         # 3x3 Conv-Batch-Relu S1
-        with tf.variable_scope('layer1'):
+        with tf.compat.v1.variable_scope('layer1'):
             if pad_type is None:
                 conv1 = conv2d(x, k, k_h=3, k_w=3, d_h=1, d_w=1, padding='SAME', name='conv')
             elif pad_type == 'REFLECT':
@@ -171,7 +171,7 @@ def res_block(x, k, _ops=None, norm_='instance', is_train=True, pad_type=None, n
             relu1 = tf.nn.relu(normalized1)
 
         # 3x3 Conv-Batch S1
-        with tf.variable_scope('layer2'):
+        with tf.compat.v1.variable_scope('layer2'):
             if pad_type is None:
                 conv2 = conv2d(relu1, k, k_h=3, k_w=3, d_h=1, d_w=1, padding='SAME', name='conv')
             elif pad_type == 'REFLECT':

@@ -1,13 +1,7 @@
-# ---------------------------------------------------------
-# Tensorflow WGAN Implementation
-# Licensed under The MIT License [see LICENSE for details]
-# Written by Cheng-Bin Jin
-# Email: sbkim0407@gmail.com
-# ---------------------------------------------------------
 import os
 import numpy as np
+import pandas as pd
 import tensorflow as tf
-import scipy
 import src.utils as utils
 from PIL import Image
 
@@ -89,12 +83,55 @@ class CelebA(object):
         return np.asarray(batch_imgs)
 
 
+class TimeSeriesNaskdaq(object):
+    def __init__(self, flags, dataset_name):
+        self.flags = flags
+        self.dataset_name = dataset_name
+        self.file_path = "/Users/wuming/CodeRepo/dl/WGAN-TensorFlow/data/nasdaq100_padding.csv"
+        self.window = 28
+        self.image_size = [32, 32, 1]
+        self.step = 16
+        self.batch_size = 64
+        self.x_trains = None
+
+    def __preprare_ts_data__(self):
+        data_frame = pd.read_csv(self.file_path)
+        index_names = data_frame.columns
+        sub_index_names = index_names[:32]
+        sub_data_frame = data_frame[sub_index_names]
+        # normal [-1, 1]
+        normal_sub_data_frame = (sub_data_frame - sub_data_frame.min()) / (sub_data_frame.max() - sub_data_frame.min())
+        normal_sub_data_frame = (normal_sub_data_frame - 0.5) * 2
+        # normal_sub_data_frame = (sub_data_frame - sub_data_frame.mean()) / sub_data_frame.std()
+        print(normal_sub_data_frame)
+        return normal_sub_data_frame.values
+
+    def load_data(self):
+        normal_data_frame = self.__preprare_ts_data__()
+        x_trains = list()
+        for st in range(0, len(normal_data_frame)-self.window+1, self.step):
+            ed = st + self.window
+            sub_frame = normal_data_frame[st:ed]
+            x_trains.append(sub_frame)
+        self.x_trains = x_trains
+
+    def train_next_batch(self):
+        batch_paths = np.random.choice(self.x_trains, self.batch_size, replace=False)
+        return np.asarray(batch_paths)
+
+
 # noinspection PyPep8Naming
 def Dataset(sess, flags, dataset_name):
     if dataset_name == 'mnist':
         return MnistDataset(sess, flags, dataset_name)
     elif dataset_name == 'celebA':
         return CelebA(flags, dataset_name)
+    elif dataset_name == "nasdaq":
+        return TimeSeriesNaskdaq(flags, dataset_name)
     else:
         raise NotImplementedError
 
+
+if __name__ == '__main__':
+    ts_obj = TimeSeriesNaskdaq(1, "nasdaq")
+    ts_obj.load_data()
