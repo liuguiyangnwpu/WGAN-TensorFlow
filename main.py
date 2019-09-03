@@ -15,7 +15,7 @@ tf.flags.DEFINE_string('gpu_index', '0', 'gpu index, default: 0')
 tf.flags.DEFINE_integer('batch_size', 128, 'batch size for one feed forwrad, default: 64')
 tf.flags.DEFINE_string('dataset', 'nasdaq', 'dataset name for choice [celebA|mnist], default: celebA')
 
-tf.flags.DEFINE_bool('is_train', False, 'training or inference mode, default: False')
+tf.flags.DEFINE_bool('is_train', True, 'training or inference mode, default: False')
 tf.flags.DEFINE_float('learning_rate', 5e-5, 'initial learning rate, default: 0.00005')
 tf.flags.DEFINE_integer('num_critic', 20, 'the number of iterations of the critic per generator iteration, default: 5')
 tf.flags.DEFINE_float('clip_val', 0.01, 'clipping value for Lipschitz constrain of the WGAN')
