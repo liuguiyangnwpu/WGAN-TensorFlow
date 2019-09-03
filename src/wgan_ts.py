@@ -27,7 +27,7 @@ class WGANTimeSeries(object):
         print("Initialized WGAN SUCCESS!")
 
     def _build_net(self):
-        with tf.device("/device:CPU:0"):
+        with tf.device("/device:GPU:0"):
             self.Y = tf.compat.v1.placeholder(tf.float32, shape=[None, *self.image_size], name='output')
             self.z = tf.compat.v1.placeholder(tf.float32, shape=[None, self.flags.z_dim], name='latent_vector')
 
