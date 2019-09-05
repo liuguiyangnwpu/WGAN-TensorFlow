@@ -19,7 +19,9 @@ class WGANTimeSeries(object):
         self.image_size = dataset.image_size
 
         self._gen_train_ops, self._dis_train_ops = [], []
-        self.gen_c = [1024, 512, 256, 128]  # 4, 8, 16, 32
+        # self.gen_c = [1024, 512, 256, 128]  # 4, 8, 16, 32
+        # self.dis_c = [64, 128, 256, 512]  # 32, 16, 8, 4
+        self.gen_c = [128, 64, 32, 16]  # 4, 8, 16, 32
         self.dis_c = [64, 128, 256, 512]  # 32, 16, 8, 4
 
         self._build_net()
@@ -84,6 +86,7 @@ class WGANTimeSeries(object):
             h2_relu = tf.nn.relu(h2_batchnorm, name='h2_relu')
 
             # 32 x 32
+            # if self.flags.dataset == 'mnist' or self.flags.dataset == "nasdaq":
             if self.flags.dataset == 'mnist' or self.flags.dataset == "nasdaq":
                 output = tf_utils.deconv2d(h2_relu, self.image_size[2], name='h3_deconv2d')
                 return tf.nn.tanh(output)

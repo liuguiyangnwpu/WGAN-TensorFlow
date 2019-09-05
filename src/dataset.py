@@ -91,7 +91,7 @@ class TimeSeriesNaskdaq(object):
         # self.file_path = "/Users/wuming/CodeRepo/dl/WGAN-TensorFlow/data/nasdaq100_padding.csv"
         self.window = 32
         self.image_size = [32, 32, 1]
-        self.step = 16
+        self.step = 32
         self.x_trains = None
 
     def __preprare_ts_data__(self):
